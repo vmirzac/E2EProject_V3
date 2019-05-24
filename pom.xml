@@ -25,10 +25,11 @@
         <version>3.0.0-M1</version>
         
         <configuration>
-          <suiteXmlFiles>
-            <suiteXmlFile>testngCucumber.xml</suiteXmlFile>
-            
-          </suiteXmlFiles>
+         <includes>
+         <include>
+
+         </include>TestRunner.java</includes>
+
         </configuration>
       </plugin>
       <plugin>

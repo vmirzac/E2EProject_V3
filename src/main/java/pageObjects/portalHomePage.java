@@ -22,15 +22,10 @@ public class portalHomePage {
 		
 	}
 
-
-
-
 	
 	public WebElement getSearchBox()
 	{
 		return driver.findElement(searchBox);
 	}
-	
-	
-	
+
 }

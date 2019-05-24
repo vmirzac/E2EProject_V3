@@ -1,17 +1,19 @@
 package pageObjects;
 
-import java.util.List;
-
-import org.openqa.selenium.By;
+import commonLibs.utils.WaitUtils;
+import junit.framework.Assert;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import pagesUtils_toDelete.BasicOperations;
 
-public class LoginPage {
+public class LoginPage extends BasicOperations {
 
 
-	public WebDriver driver;
+	WebDriver driver;
+	WaitUtils wait = new WaitUtils();
+
 
 	@FindBy(xpath = "//input[@id='wpName1']")
 	WebElement usernameBox_LP;
@@ -21,6 +23,12 @@ public class LoginPage {
 
 	@FindBy(xpath = "//button[@id='wpLoginAttempt']")
 	WebElement loginBTN_LP;
+
+	@FindBy(xpath = "//a[contains(text(),'Log in')]")
+	WebElement loginBTN_afterLogOut_LP;
+
+	@FindBy(id= "pt-login" )
+	WebElement loginBTN_MainPage;
 
 	@FindBy(xpath = "//a[@title='Log out']")
 	WebElement logoutBTN_LP;
@@ -49,19 +57,19 @@ public class LoginPage {
 	@FindBy(id = "ooui-php-5")
 	WebElement  changeCredentialsBTB_LP;
 
-	@FindBy(id = "ooui-3")
+	@FindBy(xpath = "//div[@id='ooui-php-312']//span[@class='oo-ui-labelElement-label'][contains(text(),'Appearance')]")
 	WebElement  appearanceBTN_LP;
 
-	@FindBy(id = "ooui-php-48")
+	@FindBy(xpath = "//input[@id='ooui-php-48']")
 	WebElement  cologneBlueRBTN_LP;
 
 	@FindBy(id = "mw-prefs-restoreprefs")
 	WebElement  restorePrefs_LP;
 
-	@FindBy(id = "ooui-11")
+	@FindBy(xpath = "//*[@id=\"ooui-php-316\"]/span")
 	WebElement  searchBTN_LP;
 
-	@FindBy(id = "ooui-php-192")
+	@FindBy(xpath = "//input[@id='ooui-php-192']")
 	WebElement  noAdvancedSearch_LP;
 
 	@FindBy(id = "pt-notifications-notice")
@@ -70,7 +78,7 @@ public class LoginPage {
 	@FindBy(xpath = "//span[contains(text(),'Notices')]")
 	WebElement noticesWin_LP;
 
-	@FindBy(id = "ooui-9")
+	@FindBy(xpath = "//div[@id='ooui-php-315']//span[@class='oo-ui-labelElement-label'][contains(text(),'Watchlist')]")
 	WebElement  watchlistBTN;
 
 	@FindBy(xpath = "//input[@id='ooui-php-151']")
@@ -91,6 +99,9 @@ public class LoginPage {
 	@FindBy(id = "ca-watch")
 	WebElement  watchlistStarBTN;
 
+	@FindBy(linkText = "Unwatch")
+	WebElement  watchlistStarBTN_Uncheck;
+
 	@FindBy(id = "t-emailuser")
 	WebElement  emailUserBTN;
 
@@ -103,13 +114,15 @@ public class LoginPage {
 	@FindBy(id = "ooui-php-1")
 	WebElement  restoreDefsConfirmationBTN;
 
+	@FindBy(partialLinkText = "Victor Mirzac")
+	WebElement SignatureUpdate;
 
-
-
-
+	@FindBy(id = "firstHeading")
+	WebElement emailSent_message;
 
 
 	public LoginPage(WebDriver driver) {
+		super(driver);
 
 		this.driver = driver;
 		PageFactory.initElements(driver, this);
@@ -167,12 +180,20 @@ public class LoginPage {
 		return cologneBlueRBTN_LP;
 	}
 
+	public WebElement getEmailSent_message(){
+		return emailSent_message;
+	}
+
 	public WebElement getRestorePrefs_LP(){
 		return restorePrefs_LP;
 	}
 
 	public WebElement getSearchBTN_LP(){
 		return searchBTN_LP;
+	}
+
+	public WebElement getWatchlistStarBTN_Uncheck(){
+		return watchlistStarBTN_Uncheck;
 	}
 
 	public WebElement getNoAdvancedSearch_LP(){
@@ -239,6 +260,185 @@ public class LoginPage {
 	public WebElement getRestoreDefsConfirmationBTN(){
 		return restoreDefsConfirmationBTN;
 
+	}
+
+	public WebElement getLoginBTN_MainPage(){
+		return loginBTN_MainPage;
+
+	}
+
+	public WebElement getLoginBTN_afterLogOut_LP(){
+		return loginBTN_afterLogOut_LP;
+
+	}
+
+
+
+	public WebElement getSignatureUpdate(){
+		return SignatureUpdate;
+
+	}
+
+
+
+	public void userLogin(String username, String password) throws Exception{
+
+		elementControl.click(loginBTN_MainPage);
+
+		WaitUtils.waitTillElementVisible(driver, usernameBox_LP, 5);
+
+		textboxControl.clearText(usernameBox_LP);
+		textboxControl.setText(usernameBox_LP, username);
+
+		WaitUtils.waitTillElementVisible(driver, passwordBox_LP, 5);
+
+		textboxControl.clearText(passwordBox_LP);
+		textboxControl.setText(passwordBox_LP, password);
+
+		elementControl.click(loginBTN_LP);
+
+	}
+	public void AccountLoggedIn() throws Exception {
+
+		boolean isLogoutBTNDisplayed= elementControl.isElementVisible(logoutBTN_LP);
+		Assert.assertTrue(isLogoutBTNDisplayed);
+	}
+
+	public void AccountNOTLoggedIn(){
+		getLoginBTN_LP().isDisplayed();
+	}
+
+	public void updateSignature(String arg0){
+		getPreferencesBTN_LP().click();
+		getSignatureBox_LP().clear();
+		getSignatureBox_LP().sendKeys(arg0);
+		getSaveBTN_LP().click();
+	}
+
+	public void isSignatureUpdated() throws Exception {
+		String signature = elementControl.getText(SignatureUpdate);
+		Assert.assertEquals("Victor Mirzac", signature);
+	}
+
+
+
+	public void changeSkin() throws Exception {
+		getPreferencesBTN_LP().click();
+		elementControl.isElementVisible(appearanceBTN_LP);
+		getAppearanceBTN_LP().click();
+		elementControl.isElementVisible(cologneBlueRBTN_LP);
+		getCologneBlueRBTN_LP().click();
+		elementControl.isElementVisible(saveBTN_LP);
+		getSaveBTN_LP().click();
+
+	}
+	public void restoreDefaultSettings(){
+		getPreferencesBTN_LP().click();
+		getRestorePrefs_LP().click();
+		getRestoreDefsConfirmationBTN().click();
+
+	}
+
+	public void cologneBlueSkin() throws Exception {
+		Thread.sleep(3000);
+		elementControl.isElementVisible(cologneBlueRBTN_LP);
+		final boolean isCologneBlueDisplayed = getCologneBlueRBTN_LP().isSelected();
+		Assert.assertTrue(isCologneBlueDisplayed);
+		getRestorePrefs_LP().click();
+		getRestoreDefsConfirmationBTN().click();
+	}
+
+	public void logout() throws Exception {
+		elementControl.isElementVisible(logoutBTN_LP);
+		getLogoutBTN_LP().click();
+	}
+
+	public void isLoggedOut() throws Exception {
+		elementControl.isElementVisible(loginBTN_afterLogOut_LP);
+		boolean isLoginBTNDisplayed= elementControl.isElementVisible(loginBTN_afterLogOut_LP);
+		Assert.assertTrue(isLoginBTNDisplayed);
+//		cmnDriver.closeAllBrowsers();
+	}
+
+	public void sendEmail(){
+		String message = "Hello";
+		getSandbox_BTN().click();
+		getEmailUserBTN().click();
+		getMessageBox().sendKeys(message);
+		getSendMessageBTN().click();
+	}
+
+	public void isEmailSent(){
+		boolean emailSentMessage = getEmailSent_message().isDisplayed();
+		Assert.assertTrue(emailSentMessage);
+	}
+
+	public void updateWatchlist(String arg0) throws Exception {
+		getPreferencesBTN_LP().click();
+		Thread.sleep(3000);
+		elementControl.isElementVisible(watchlistBTN);
+		getWatchlistBTN().click();
+		elementControl.isElementVisible(daysToShowInWatchlistBox_LP);
+		getDaysToShowInWatchlistBox_LP().clear();
+		elementControl.isElementVisible(daysToShowInWatchlistBox_LP);
+		getDaysToShowInWatchlistBox_LP().sendKeys(arg0);
+		elementControl.isElementVisible(saveBTN_LP);
+		getSaveBTN_LP().click();
+		elementControl.isElementVisible(restorePrefs_LP);
+		getRestorePrefs_LP().click();
+		elementControl.isElementVisible(restoreDefsConfirmationBTN);
+		getRestoreDefsConfirmationBTN().click();
+	}
+
+	public void addArticleToWatchlist() throws Exception {
+		elementControl.isElementVisible(watchlistStarBTN);
+		getWatchlistStarBTN().click();
+	}
+
+	public void isWatchlistEnabled() throws Exception {
+		boolean IsWatchlistBTNEnabled = elementControl.isElementEnabled(watchlistStarBTN);
+		Assert.assertTrue(IsWatchlistBTNEnabled);
+	}
+
+	public void changePassword(String arg0)throws Exception{
+		getPreferencesBTN_LP().click();
+		getChangePassBTN_LP().click();
+		getNewPassBox_LP().sendKeys(arg0);
+		getRetypeNewPass_LP().sendKeys(arg0);
+		getChangeCredentialsBTB_LP().click();
+
+	}
+
+	public void changePasswordIncorrectly(String arg0, String arg1)throws Exception{
+		getPreferencesBTN_LP().click();
+		getChangePassBTN_LP().click();
+		getNewPassBox_LP().sendKeys(arg0);
+		getRetypeNewPass_LP().sendKeys(arg1);
+		getChangeCredentialsBTB_LP().click();
+
+	}
+
+	public void openNotices(){
+		getNotifisBTN_LP().click();
+	}
+
+	public void isNoticesWindowDisplayed() throws Exception {
+		Thread.sleep(3000);
+		elementControl.isElementVisible(noticesWin_LP);
+		boolean notificationWindowIsDisplayed = getNoticesWin_LP().isDisplayed();
+		Assert.assertTrue(notificationWindowIsDisplayed);
+	}
+
+	public void createArticle(String arg0){
+		getSandbox_BTN().click();
+		getEditSource_BTN().click();
+		getTextBox().clear();
+		getTextBox().sendKeys(arg0);
+
+	}
+
+	public void publishArticle(){
+		getPublish_BTN().click();
 	}
 
 

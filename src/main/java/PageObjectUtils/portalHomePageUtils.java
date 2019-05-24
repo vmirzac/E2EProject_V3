@@ -17,8 +17,7 @@ public class portalHomePageUtils {
 	
 	
 	public portalHomePageUtils(WebDriver driver) {
-		// TODO Auto-generated constructor stub
-		
+
 		this.driver=driver;
 		
 	}

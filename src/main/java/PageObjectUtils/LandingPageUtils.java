@@ -1,45 +1,66 @@
 package PageObjectUtils;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
+import commonLibs.implementation.Driver;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import pageObjects.LandingPage;
 
-public class LandingPageUtils {
+import static org.testng.Assert.fail;
 
-	
-	public WebDriver driver;
+public class LandingPageUtils extends BaseScenarios {
 
-	// Wikipedia
-	@FindBy(id = "searchInput")
-	WebElement searchButtonMP;
+	Driver cmnDriver;
+	LandingPage landingPage;
 
-	@FindBy(xpath = "//*[@id=\"js-link-box-en\"]/strong")
-	WebElement englishBTN_MP;
+	@BeforeClass
+	public void invokeBrowser() {
 
 
+		try {
+			cmnDriver = new Driver("firefox");
+			cmnDriver.setPageLoadTimeout(60);
+			cmnDriver.setElementDetectionTimeout(10);
 
-	
-	
-	public LandingPageUtils(WebDriver driver) {
+			cmnDriver.navigateToUrl("https://www.wikipedia.org/");
 
-		this.driver=driver;
-		PageFactory.initElements(driver, this);
-		
+			landingPage = new LandingPage(cmnDriver.getDriver());
+
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+
+
 	}
 
-	public WebElement searchButtonMP()
-	{
-		return searchButtonMP;
+	@AfterClass
+
+	public void closeBrowser() {
+		try {
+			cmnDriver.closeAllBrowsers();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
-	public WebElement englishBTN_MP(){
-		return englishBTN_MP;
+
+
+	public void searchArticleLandingPageTest(){
+
+		String searchItem = "Cucumber";
+
+		try {
+			landingPage.searchArticleLandingPage(searchItem);
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail("An Exception Occured");
+		}
+
 	}
 
 
-
-	
-	
-	
 }
+
+
+

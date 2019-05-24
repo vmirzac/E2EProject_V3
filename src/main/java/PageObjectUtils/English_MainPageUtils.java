@@ -1,61 +1,84 @@
 package PageObjectUtils;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
+import commonLibs.implementation.Driver;
+import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+import pageObjects.English_MainPage;
 
+import static org.testng.Assert.fail;
 public class English_MainPageUtils {
 
 
-    public WebDriver driver;
+    Driver cmnDriver;
+    English_MainPage eng_mainPage;
 
-    @FindBy(xpath = "//a[@title='Castravete – Romanian']")
-    WebElement romanianBTB_EMP;
-
-    @FindBy(xpath = "//input[@id='searchButton']")
-    WebElement searchBTN_EMP;
-
-    @FindBy(id = "pt-login")
-    WebElement loginBTN_EMP;
-
-    @FindBy(xpath = "//a[@class='noprint stopMobileRedirectToggle']")
-    WebElement mobileViewBTN_EMP;
-
-    @FindBy(id = "n-randompage")
-    WebElement randomArticle_EMP;
-
-    @FindBy(xpath = "//a[@class='external text'][contains(text(),'Wikibooks')]")
-    WebElement wikibooksBTN;
+    @BeforeClass
+    public void invokeBrowser() {
 
 
+        try {
+            cmnDriver = new Driver("firefox");
+            cmnDriver.setPageLoadTimeout(60);
+            cmnDriver.setElementDetectionTimeout(10);
+
+            cmnDriver.navigateToUrl("https://www.wikipedia.org/");
+
+            eng_mainPage = new English_MainPage(cmnDriver.getDriver());
 
 
-    public English_MainPageUtils(WebDriver driver) {
+        } catch (Exception e) {
+            e.printStackTrace();
 
-        this.driver = driver;
-        PageFactory.initElements(driver, this);
+        }
+
 
     }
 
-    public WebElement getRomanianBTB_EMP() {
-        return romanianBTB_EMP;
-    }
-    public WebElement getSearchBTN_EMP(){
-        return searchBTN_EMP;
-    }
-    public WebElement getLoginBTN_EMP(){
-        return loginBTN_EMP;
-    }
-    public WebElement getMobileViewBTN_EMP(){
-        return mobileViewBTN_EMP;
+    @AfterClass
+
+    public void closeBrowser() {
+        try {
+            cmnDriver.closeAllBrowsers();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public WebElement getRandomArticle_EMP(){
-        return randomArticle_EMP;
+    @org.testng.annotations.Test
+    public void verifyTitleOfTheHomePage(){
+        String expectedTitle = "Wikipedia, the free encyclopedia";
+        String actualTile = null;
+        try {
+            actualTile = cmnDriver.getTitle();
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("An Exception Occured");
+
+        }
+
+        Assert.assertEquals(actualTile, expectedTitle);
+
     }
 
-    public WebElement getWikibooksBTN(){
-        return wikibooksBTN;
+    @Test
+    public void verifyUserLoginWithCorrect(){
+
+        String username = "Moldova1859";
+        String password = "Tester555";
+
+        try {
+            cmnDriver.navigateToUrl("https://en.wikipedia.org/wiki/Main_Page");
+            eng_mainPage.userLogin(username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("An Exception Occured");
+        }
+
     }
+
+
 }
+
+

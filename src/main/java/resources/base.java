@@ -1,12 +1,5 @@
 package resources;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Properties;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -14,6 +7,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 public class base {
 
@@ -23,9 +22,11 @@ public WebDriver initializeDriver() throws IOException
 {
 	
  prop= new Properties();
-FileInputStream fis=new FileInputStream("C:\\Users\\vmirzac\\Desktop\\E2E_Automation\\E2EProjectCucumber\\src\\main\\java\\resources\\data.properties");
+FileInputStream fis=new FileInputStream("C:\\Users\\vmirzac\\Desktop\\E2E_Automation\\E2EProjectCucumber - V3\\src\\main\\java\\resources\\config.properties");
 
 prop.load(fis);
+
+
 String browserName=prop.getProperty("browser");
 System.out.println(browserName);
 
